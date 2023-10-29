@@ -41,6 +41,7 @@ php artisan serve
 ```
 
 email:test@example.com
+
 pass:123
 
 ## features
