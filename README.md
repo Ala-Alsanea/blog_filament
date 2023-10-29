@@ -2,9 +2,10 @@
 
 ## to setup :
 
+```
 cp .env.example .env
-
-configer it with your DB
+```
+**configer it with your DB**
 
 ------------------------------------------
 ```
