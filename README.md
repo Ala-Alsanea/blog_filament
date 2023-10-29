@@ -6,6 +6,10 @@ cp .env.example .env
 
 configer it with your DB
 
+---
+
+
+
 ```
 composer install
 ```
