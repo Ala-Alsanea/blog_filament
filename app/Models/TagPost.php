@@ -8,11 +8,11 @@ class TagPost extends Pivot
 {
     //
 
-    // protected $fillable = [
-    //     'post_id',
-    //     'tag_id',
+    protected $fillable = [
+        'post_id',
+        'tag_id',
 
-    // ];
+    ];
 
     protected $table = 'tag_post';
 }

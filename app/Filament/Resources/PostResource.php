@@ -9,11 +9,14 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Enums\ActionsPosition;
 use App\Filament\Resources\PostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PostResource\RelationManagers;
+use App\Filament\Resources\PostResource\RelationManagers\CommentRelationManager;
 
 class PostResource extends Resource
 {
@@ -35,9 +38,9 @@ class PostResource extends Resource
                     ->searchable()
                     ->preload()
                     ->native(false),
-                     Forms\Components\Select::make('tag_id')
-                    ->relationship(name: 'tags', titleAttribute: 'title')
+                Forms\Components\Select::make('tag_id')
                     ->searchable()
+                    ->relationship(name: 'tags', titleAttribute: 'title')
                     ->multiple()
                     ->preload()
                     ->native(false),
@@ -59,44 +62,32 @@ class PostResource extends Resource
         return $table
             ->columns([
 
-                Tables\Columns\Layout\Grid::make()
-                    ->columns(1)
-                    ->schema([
 
 
-                        ImageColumn::make('image')
-                            // ->collection('image')
-                            // ->conversion('thumb')
-                            ->extraImgAttributes(['class' => 'w-full rounded-xl'])
-                            ->square()
-                            ->height(200),
-                        Tables\Columns\TextColumn::make('title')
-                            ->description(fn (Post $record): string => substr($record->description, 0, 15))
-                            ->searchable()
-                            ->weight(FontWeight::Bold),
-                        Tables\Columns\TextColumn::make('category.title')
-                            ->searchable(),
+
+                Tables\Columns\TextColumn::make('title')
+                    ->description(fn (Post $record): string => substr($record->description, 0, 15))
+                    ->searchable()
+                    ->weight(FontWeight::Bold),
                 Tables\Columns\TextColumn::make('user.name')
                     ->searchable(),
-
-
-
-
-
-                        // Tables\Columns\TextColumn::make('created_at')
-                        //     ->dateTime()
-                        //     ->sortable()
-                        //     ->toggleable(isToggledHiddenByDefault: true),
-                        // Tables\Columns\TextColumn::make('updated_at')
-                        //     ->dateTime()
-                        //     ->sortable()
-                        //     ->toggleable(isToggledHiddenByDefault: true),
-
-
-                    ])
+                Tables\Columns\TextColumn::make('category.title')
+                    ->searchable()
+                    ->badge()
+                    ->color('success'),
+                Tables\Columns\TextColumn::make('tags.title')
+                    ->badge()
+                    ->color('warning')
+                    ->searchable(),
+                ImageColumn::make('image')
+                    // ->collection('image')
+                    // ->conversion('thumb')
+                    ->extraImgAttributes(['class' => 'w-full rounded-xl'])
+                    ->square()
+                    ->height(100),
 
             ])
-            ->contentGrid(['md' => 2, 'xl' => 3])
+            // ->contentGrid(['md' => 2, 'xl' => 3])
             // ->paginationPageOptions([9, 18, 27])
             // ->modifyQueryUsing(fn (Builder $query)=>$query->published())
             ->filters([
@@ -107,13 +98,24 @@ class PostResource extends Resource
             ])
 
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-            ])
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ])
+            ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+
+            ->emptyStateActions([
+                Tables\Actions\Action::make('create')
+                    ->label('Create post')
+                    ->url(route('filament.admin.resources.posts.create'))
+                    ->icon('heroicon-m-plus')
+                    ->button(),
             ]);
     }
 
@@ -123,6 +125,7 @@ class PostResource extends Resource
     {
         return [
             //
+            CommentRelationManager::class
         ];
     }
 
@@ -132,7 +135,7 @@ class PostResource extends Resource
             'index' => Pages\ListPosts::route('/'),
             'create' => Pages\CreatePost::route('/create'),
             'view' => Pages\ViewPost::route('/{record}'),
-            // 'edit' => Pages\EditPost::route('/{record}/edit'),
+            'edit' => Pages\EditPost::route('/{record}/edit'),
         ];
     }
 }
