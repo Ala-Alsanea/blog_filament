@@ -30,15 +30,15 @@ class AdminPanelProvider extends PanelProvider
             ->registration()
             ->brandName('BLOG')
             ->colors([
-                'primary' => Color::Cyan,
-                // 'primary' => Color::Yellow,
+                // 'primary' => Color::Cyan,
+                'primary' => Color::Yellow,
 
 
-                'gray' => Color::Indigo,
-                'danger' => Color::Rose,
-                'info' => Color::Blue,
-                'success' => Color::Emerald,
-                'warning' => Color::Orange,
+                // 'gray' => Color::Indigo,
+                // 'danger' => Color::Rose,
+                // 'info' => Color::Blue,
+                // 'success' => Color::Emerald,
+                // 'warning' => Color::Orange,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

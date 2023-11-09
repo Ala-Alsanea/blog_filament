@@ -38,12 +38,16 @@ class PostResource extends Resource
                     ->searchable()
                     ->preload()
                     ->native(false),
+
+
                 Forms\Components\Select::make('tag_id')
                     ->searchable()
                     ->relationship(name: 'tags', titleAttribute: 'title')
                     ->multiple()
                     ->preload()
                     ->native(false),
+
+
                 Forms\Components\MarkdownEditor::make('description')
                     ->required()
                     ->maxLength(500),
@@ -54,7 +58,7 @@ class PostResource extends Resource
 
 
 
-            ])->columns(1);
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
